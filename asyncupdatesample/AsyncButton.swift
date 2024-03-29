@@ -1,18 +1,41 @@
 //
-//  AsyncRequestView.swift
+//  AsyncButton.swift
 //  asyncupdatesample
 //
-//  Created by John Palevich on 3/29/24.
+//  https://www.swiftbysundell.com/articles/building-an-async-swiftui-button/
 //
 
 import SwiftUI
 
-struct AsyncRequestView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
-}
+struct AsyncButton<Label: View>: View {
+    var action: () async -> Void
+    @ViewBuilder var label: () -> Label
 
-#Preview {
-    AsyncRequestView()
+    @State private var isPerformingTask = false
+
+    var body: some View {
+        Button(
+            action: {
+                isPerformingTask = true
+            
+                Task {
+                    await action()
+                    isPerformingTask = false
+                }
+            },
+            label: {
+                ZStack {
+                    // We hide the label by setting its opacity
+                    // to zero, since we don't want the button's
+                    // size to change while its task is performed:
+                    label().opacity(isPerformingTask ? 0 : 1)
+
+                    if isPerformingTask {
+                        ProgressView()
+                    }
+                }
+            }
+        )
+        .disabled(isPerformingTask)
+    }
 }

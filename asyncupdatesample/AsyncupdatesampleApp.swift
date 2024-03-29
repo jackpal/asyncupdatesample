@@ -8,10 +8,12 @@
 import SwiftUI
 
 @main
-struct asyncupdatesampleApp: App {
+struct AsyncupdatesampleApp: App {
+    private var model = Model()
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environment(model)
         }
     }
 }

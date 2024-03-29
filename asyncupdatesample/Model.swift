@@ -6,3 +6,7 @@
 //
 
 import Foundation
+
+@Observable class Model {
+    var count : Int = 0
+}
